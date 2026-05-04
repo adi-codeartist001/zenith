@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith | AI Vibe Match</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg:#050505;--glass:rgba(255,255,255,0.03);--border:rgba(255,255,255,0.08);--accent:#06b6d4;--purple:#a855f7;}
+        body{background:var(--bg);color:white;font-family:'Plus Jakarta Sans',sans-serif;margin:0;min-height:100vh;}
+        .glass-card{background:var(--glass);border:1px solid var(--border);border-radius:20px;transition:0.3s;}
+        .glass-card:hover{border-color:var(--accent);}
+        .gradient-text{background:linear-gradient(to right,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .match-ring{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.95rem;flex-shrink:0;}
+        .skill-tag{background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.25);padding:3px 10px;border-radius:100px;font-size:0.72rem;font-weight:700;color:#d8b4fe;}
+        .vibe-badge{padding:4px 12px;border-radius:100px;font-size:0.7rem;font-weight:800;letter-spacing:1px;}
+        .ai-badge{background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);color:#a5b4fc;padding:2px 10px;border-radius:100px;font-size:0.7rem;font-weight:700;}
+        .btn-connect{background:white;color:black;border:none;padding:10px 24px;border-radius:12px;font-weight:800;font-size:0.85rem;cursor:pointer;transition:0.3s;text-decoration:none;}
+        .btn-connect:hover{background:var(--accent);color:black;}
+        .btn-connected{background:rgba(0,255,136,0.1);border:1px solid #00ff88;color:#00ff88;padding:10px 24px;border-radius:12px;font-weight:800;font-size:0.85rem;}
+        .flash-msg{background:rgba(99,102,241,0.1);border:1px solid #6366f1;color:white;padding:12px 20px;border-radius:14px;margin-bottom:20px;font-size:0.9rem;}
+        .back-link{color:#555;text-decoration:none;font-size:0.9rem;display:inline-block;margin-bottom:30px;}
+        .back-link:hover{color:white;}
+        .stat-box{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:20px;text-align:center;}
+    </style>
+</head>
+<body>
+<div class="container py-5" style="max-width:900px;">
+    <a href="/dashboard" class="back-link">← Dashboard</a>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}{% for m in messages %}<div class="flash-msg">✓ {{ m }}</div>{% endfor %}{% endif %}
+    {% endwith %}
+
+    <div class="d-flex justify-content-between align-items-start mb-2 flex-wrap gap-3">
+        <div>
+            <h1 class="fw-bold gradient-text mb-1">AI Vibe Match</h1>
+            <p class="text-secondary mb-0">Groq AI scores your compatibility with every scholar in the network.</p>
+        </div>
+        <span class="ai-badge">🤖 Powered by Groq AI</span>
+    </div>
+
+    <!-- STATS -->
+    <div class="row g-3 my-4">
+        <div class="col-4"><div class="stat-box"><h3 class="fw-bold mb-1">{{ total_collaborators }}</h3><small class="text-secondary">Total Scholars</small></div></div>
+        <div class="col-4"><div class="stat-box"><h3 class="fw-bold mb-1" style="color:#00ff88;">{{ active_squads }}</h3><small class="text-secondary">Your Connections</small></div></div>
+        <div class="col-4"><div class="stat-box"><h3 class="fw-bold mb-1" style="color:#a855f7;">AI</h3><small class="text-secondary">Match Engine</small></div></div>
+    </div>
+
+    {% if suggestions %}
+        {% for s in suggestions %}
+        <div class="glass-card p-4 mb-3">
+            <div class="d-flex gap-3 align-items-start flex-wrap">
+                <!-- MATCH RING -->
+                <div class="match-ring" style="background:conic-gradient(
+                    {% if s.match >= 85 %}#00ff88{% elif s.match >= 70 %}#06b6d4{% else %}#a855f7{% endif %}
+                    {{ s.match * 3.6 }}deg, rgba(255,255,255,0.05) 0deg);
+                    box-shadow:0 0 20px rgba(0,255,136,0.15);">
+                    {{ s.match }}%
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                        <div>
+                            <h5 class="fw-bold mb-1">{{ s.user.name }}</h5>
+                            <p class="text-secondary mb-2" style="font-size:0.85rem;">{{ s.user.niche or 'Scholar' }} · {{ s.user.university or 'GLA University' }}</p>
+                            <span class="vibe-badge" style="background:rgba(168,85,247,0.15);border:1px solid rgba(168,85,247,0.3);color:#d8b4fe;">✨ {{ s.vibe }}</span>
+                        </div>
+                        <div>
+                            {% if s.connected %}
+                                <span class="btn-connected">✓ Connected</span>
+                            {% else %}
+                                <a href="/initialize_connection/{{ s.user.email }}" class="btn-connect">Connect +20XP</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if s.user.skill_list %}
+                    <div class="d-flex gap-2 flex-wrap mt-3">
+                        {% for skill in s.user.skill_list[:5] %}
+                            <span class="skill-tag">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% if s.user.bio %}
+                    <p class="mt-2 mb-0" style="font-size:0.82rem;color:#64748b;">{{ s.user.bio[:100] }}{% if s.user.bio|length > 100 %}...{% endif %}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="glass-card p-5 text-center">
+            <div style="font-size:3rem">🤖</div>
+            <h4 class="mt-3">No other scholars yet</h4>
+            <p class="text-secondary">Be the first! Share Zenith with your batch.</p>
+        </div>
+    {% endif %}
+</div>
+</body>
+</html>

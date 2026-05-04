@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith | Pulse Feed</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg:#050505;--glass:rgba(255,255,255,0.03);--border:rgba(255,255,255,0.08);}
+        body{background:var(--bg);color:white;font-family:'Plus Jakarta Sans',sans-serif;padding:40px 20px;min-height:100vh;}
+        .gradient-text{background:linear-gradient(to right,#fff,#00f2ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .pulse-card{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:18px 22px;margin-bottom:12px;display:flex;align-items:center;gap:16px;transition:0.3s;}
+        .pulse-card:hover{border-color:rgba(0,242,255,0.3);}
+        .pulse-dot{width:10px;height:10px;background:#00ff88;border-radius:50%;flex-shrink:0;animation:blink 2s infinite;}
+        @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+        .pulse-time{font-size:0.75rem;color:#475569;margin-left:auto;white-space:nowrap;}
+        .live-badge{background:rgba(0,255,136,0.1);border:1px solid #00ff88;color:#00ff88;padding:4px 14px;border-radius:100px;font-size:0.72rem;font-weight:800;letter-spacing:1px;}
+    </style>
+</head>
+<body>
+<div class="container" style="max-width:750px;">
+    <a href="/dashboard" class="text-secondary text-decoration-none d-block mb-4">← Dashboard</a>
+    <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3">
+        <div>
+            <h1 class="fw-bold gradient-text mb-1">⚡ Zenith Pulse</h1>
+            <p class="text-secondary mb-0">Real-time activity from across the network.</p>
+        </div>
+        <span class="live-badge">● LIVE</span>
+    </div>
+
+    {% if notifications %}
+        {% for n in notifications %}
+        <div class="pulse-card">
+            <div class="pulse-dot"></div>
+            <div>
+                <span class="fw-bold">{{ n.actor }}</span>
+                <span class="text-secondary"> {{ n.action }}</span>
+                {% if n.project %}<em class="text-secondary"> "{{ n.project }}"</em>{% endif %}
+                {% if n.world %}<span class="badge ms-2" style="background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.7rem;">{{ n.world }}</span>{% endif %}
+            </div>
+            <div class="pulse-time">{{ n.created_at.strftime('%d %b · %H:%M') }}</div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="text-center py-5">
+            <div style="font-size:3rem">⚡</div>
+            <h4 class="mt-3">No activity yet</h4>
+            <p class="text-secondary">Register, join projects, and connect — the pulse comes alive.</p>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+// Live refresh every 20 seconds
+setInterval(() => {
+    fetch('/api/pulse').then(r => r.json()).then(data => {
+        if (data.length) location.reload();
+    });
+}, 20000);
+</script>
+</body>
+</html>

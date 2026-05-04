@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith | {{ world_name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg:#050505;--glass:rgba(255,255,255,0.03);--border:rgba(255,255,255,0.08);--accent:#6366f1;}
+        body{background:var(--bg);color:white;font-family:'Plus Jakarta Sans',sans-serif;padding:40px 20px;min-height:100vh;}
+        .glass-card{background:var(--glass);border:1px solid var(--border);border-radius:20px;transition:0.3s;text-decoration:none;color:white;display:block;}
+        .glass-card:hover{border-color:var(--accent);transform:translateY(-4px);color:white;}
+        .gradient-text{background:linear-gradient(to right,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .tag-pill{background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);padding:3px 10px;border-radius:100px;font-size:0.72rem;font-weight:700;color:#a5b4fc;}
+        .progress-mini{background:rgba(255,255,255,0.05);border-radius:100px;height:4px;}
+        .progress-fill{background:linear-gradient(to right,#6366f1,#00f2ff);border-radius:100px;height:4px;}
+        .ai-tag{background:rgba(112,0,255,0.1);border:1px solid rgba(112,0,255,0.3);color:#c4b5fd;font-size:0.7rem;padding:2px 8px;border-radius:100px;font-weight:700;font-style:italic;}
+    </style>
+</head>
+<body>
+<div class="container" style="max-width:1000px;">
+    <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3">
+        <div>
+            <a href="/worlds" class="text-secondary text-decoration-none d-block mb-2">← All Worlds</a>
+            <h1 class="fw-bold gradient-text mb-1">{{ world_name }}</h1>
+            <p class="text-secondary mb-0">{{ projects|length }} active project{% if projects|length != 1 %}s{% endif %} in this world</p>
+        </div>
+        <a href="/propose_project" class="btn btn-light fw-bold px-4 py-2" style="border-radius:14px;">+ New Project</a>
+    </div>
+
+    {% if projects %}
+    <div class="row g-4">
+        {% for p in projects %}
+        <div class="col-md-6">
+            <a href="/project_overview/{{ p.id }}" class="glass-card p-4 h-100">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h5 class="fw-bold mb-0">{{ p.title }}</h5>
+                    <span class="badge" style="background:rgba(0,255,136,0.1);color:#00ff88;border:1px solid #00ff88;font-size:0.7rem;white-space:nowrap;">{{ p.vacancies }} open</span>
+                </div>
+                {% if p.ai_tagline %}<div class="ai-tag mb-3">✨ {{ p.ai_tagline[:80] }}</div>{% endif %}
+                <p class="text-secondary mb-3" style="font-size:0.85rem;">{{ (p.desc or '')[:100] }}{% if (p.desc or '')|length > 100 %}...{% endif %}</p>
+                {% if p.tag_list %}
+                <div class="d-flex gap-2 flex-wrap mb-3">
+                    {% for tag in p.tag_list[:3] %}<span class="tag-pill">{{ tag }}</span>{% endfor %}
+                </div>
+                {% endif %}
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-secondary">by {{ p.author }}</small>
+                    <small class="text-secondary">{{ p.progress }}%</small>
+                </div>
+                <div class="progress-mini mt-2"><div class="progress-fill" style="width:{{ p.progress }}%"></div></div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <div style="font-size:3rem">🚀</div>
+        <h4 class="mt-3">No projects in this world yet.</h4>
+        <p class="text-secondary">Be the pioneer. Launch the first initiative.</p>
+        <a href="/propose_project" class="btn btn-light fw-bold mt-2">Propose Project</a>
+    </div>
+    {% endif %}
+</div>
+</body>
+</html>

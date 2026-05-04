@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith | My Projects</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg:#050505;--glass:rgba(255,255,255,0.03);--border:rgba(255,255,255,0.08);--accent:#6366f1;}
+        body{background:var(--bg);color:white;font-family:'Plus Jakarta Sans',sans-serif;padding:40px 20px;min-height:100vh;}
+        .glass-card{background:var(--glass);border:1px solid var(--border);border-radius:20px;transition:0.3s;}
+        .glass-card:hover{border-color:var(--accent);}
+        .gradient-text{background:linear-gradient(to right,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .tag-pill{background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);padding:3px 10px;border-radius:100px;font-size:0.72rem;font-weight:700;color:#a5b4fc;}
+        .ai-tagline{color:#c4b5fd;font-style:italic;font-size:0.82rem;}
+        .section-label{font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:#64748b;margin-bottom:16px;}
+        .flash-msg{background:rgba(99,102,241,0.1);border:1px solid #6366f1;color:white;padding:12px 20px;border-radius:14px;margin-bottom:20px;}
+        .progress-mini{background:rgba(255,255,255,0.05);border-radius:100px;height:5px;margin-top:8px;}
+        .progress-fill{background:linear-gradient(to right,#6366f1,#00f2ff);border-radius:100px;height:5px;}
+    </style>
+</head>
+<body>
+<div class="container" style="max-width:900px;">
+    <a href="/dashboard" class="text-secondary text-decoration-none d-block mb-4">← Dashboard</a>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}{% for m in messages %}<div class="flash-msg">✓ {{ m }}</div>{% endfor %}{% endif %}
+    {% endwith %}
+
+    <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3">
+        <h1 class="fw-bold gradient-text">My Projects</h1>
+        <a href="/propose_project" class="btn btn-light fw-bold px-4 py-2" style="border-radius:14px;">+ Propose New</a>
+    </div>
+
+    <!-- OWNED -->
+    <div class="section-label">Projects I Lead</div>
+    {% if owned_projects %}
+        {% for p in owned_projects %}
+        <div class="glass-card p-4 mb-3">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                <div class="flex-grow-1">
+                    <h5 class="fw-bold mb-1">{{ p.title }}</h5>
+                    {% if p.ai_tagline %}<p class="ai-tagline mb-2">✨ {{ p.ai_tagline }}</p>{% endif %}
+                    <div class="d-flex gap-2 flex-wrap mb-2">
+                        {% for tag in p.tag_list[:3] %}<span class="tag-pill">{{ tag }}</span>{% endfor %}
+                    </div>
+                    <small class="text-secondary">{{ p.world|title }} · {{ p.vacancies }} spots open · {{ p.status }}</small>
+                    <div class="progress-mini"><div class="progress-fill" style="width:{{ p.progress }}%"></div></div>
+                    <small class="text-secondary">{{ p.progress }}% complete</small>
+                </div>
+                <div class="d-flex flex-column gap-2 ms-3">
+                    <a href="/project_overview/{{ p.id }}" class="btn btn-sm btn-outline-light" style="border-radius:10px;">View</a>
+                    {% if p.status != 'Archived' %}
+                    <form method="POST" action="/archive_project/{{ p.id }}">
+                        <button type="submit" class="btn btn-sm w-100" style="background:rgba(0,255,136,0.1);border:1px solid #00ff88;color:#00ff88;border-radius:10px;">Complete</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="glass-card p-4 text-center text-secondary mb-4">No projects yet. Launch your first initiative!</div>
+    {% endif %}
+
+    <!-- JOINED -->
+    {% if joined_projects %}
+    <div class="section-label mt-5">Projects I've Joined</div>
+    {% for p in joined_projects %}
+    <div class="glass-card p-4 mb-3">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h5 class="fw-bold mb-1">{{ p.title }}</h5>
+                {% if p.ai_tagline %}<p class="ai-tagline mb-1">✨ {{ p.ai_tagline }}</p>{% endif %}
+                <small class="text-secondary">Led by {{ p.author }} · {{ p.world|title }}</small>
+                <div class="progress-mini mt-2"><div class="progress-fill" style="width:{{ p.progress }}%"></div></div>
+            </div>
+            <a href="/project_overview/{{ p.id }}" class="btn btn-sm btn-outline-light" style="border-radius:10px;">View</a>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+</body>
+</html>

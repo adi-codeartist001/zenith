@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith | Overview</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg:#050505;--glass:rgba(255,255,255,0.03);--border:rgba(255,255,255,0.08);--accent:#6366f1;}
+        body{background:var(--bg);color:white;font-family:'Plus Jakarta Sans',sans-serif;padding:50px 20px;min-height:100vh;}
+        .gradient-text{background:linear-gradient(to right,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .glass-card{background:var(--glass);border:1px solid var(--border);border-radius:20px;padding:30px;text-align:center;}
+        .step-num{font-size:3rem;font-weight:800;background:linear-gradient(to right,#7000ff,#00f2ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;}
+        .ai-features{background:rgba(112,0,255,0.05);border:1px solid rgba(112,0,255,0.2);border-radius:20px;padding:28px;}
+        .feature-item{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;}
+        .feature-icon{font-size:1.5rem;flex-shrink:0;}
+    </style>
+</head>
+<body>
+<div class="container" style="max-width:900px;">
+    <a href="/dashboard" class="text-secondary text-decoration-none d-block mb-4">← Dashboard</a>
+    <h1 class="fw-bold gradient-text mb-2">How Zenith Works</h1>
+    <p class="text-secondary mb-5">AI-powered student collaboration. Real projects, real XP, real impact.</p>
+
+    <!-- LIVE STATS -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4"><div class="glass-card"><h2 class="fw-bold" style="color:#00f2ff;">{{ stats.network_size }}</h2><small class="text-secondary">Scholars in Network</small></div></div>
+        <div class="col-md-4"><div class="glass-card"><h2 class="fw-bold" style="color:#00ff88;">{{ stats.active_missions }}</h2><small class="text-secondary">Active Projects</small></div></div>
+        <div class="col-md-4"><div class="glass-card"><h2 class="fw-bold" style="color:#a855f7;">{{ stats.collaboration_aura }}</h2><small class="text-secondary">Collaboration Aura</small></div></div>
+    </div>
+
+    <!-- STEPS -->
+    <div class="row g-4 mb-5">
+        {% for step in steps %}
+        <div class="col-md-4">
+            <div class="glass-card h-100">
+                <div class="step-num mb-3">{{ step.id }}</div>
+                <h5 class="fw-bold">{{ step.title }}</h5>
+                <p class="text-secondary mb-0" style="font-size:0.9rem;">{{ step.desc }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- AI FEATURES -->
+    <div class="ai-features">
+        <h4 class="fw-bold mb-4">🤖 AI Features Built In</h4>
+        <div class="feature-item"><span class="feature-icon">🧬</span><div><strong>AI Project DNA</strong><p class="text-secondary mb-0" style="font-size:0.88rem;">Groq AI auto-generates a tagline and skill tags for every new project.</p></div></div>
+        <div class="feature-item"><span class="feature-icon">🎯</span><div><strong>AI Match Score</strong><p class="text-secondary mb-0" style="font-size:0.88rem;">Every project shows your personal AI compatibility % based on niche and skills.</p></div></div>
+        <div class="feature-item"><span class="feature-icon">✨</span><div><strong>AI Vibe Match</strong><p class="text-secondary mb-0" style="font-size:0.88rem;">Collaborators are ranked by Groq AI with a vibe descriptor like "Tech Twins" or "Creative Sync".</p></div></div>
+        <div class="feature-item"><span class="feature-icon">🤖</span><div><strong>AI Squad Builder</strong><p class="text-secondary mb-0" style="font-size:0.88rem;">On any project page, AI suggests the best 5 scholars to recruit for your team.</p></div></div>
+        <div class="feature-item"><span class="feature-icon">⚡</span><div><strong>Zenith Pulse</strong><p class="text-secondary mb-0" style="font-size:0.88rem;">Real-time activity feed. Auto-refreshes every 30 seconds. Every action is logged.</p></div></div>
+        <div class="feature-item"><span class="feature-icon">🎙️</span><div><strong>AI Voice Narration</strong><p class="text-secondary mb-0" style="font-size:0.88rem;">Landing page plays an AI-generated voice introducing Zenith to new visitors.</p></div></div>
+    </div>
+</div>
+</body>
+</html>

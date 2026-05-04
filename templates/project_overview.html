@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith | {{ project.title }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg:#050505;--glass:rgba(255,255,255,0.03);--border:rgba(255,255,255,0.08);--accent:#6366f1;}
+        body{background:var(--bg);color:white;font-family:'Plus Jakarta Sans',sans-serif;padding:40px 20px;min-height:100vh;}
+        .glass-card{background:var(--glass);border:1px solid var(--border);border-radius:20px;}
+        .gradient-text{background:linear-gradient(to right,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .tag-pill{background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);padding:4px 12px;border-radius:100px;font-size:0.75rem;font-weight:700;color:#a5b4fc;}
+        .ai-tagline{background:rgba(112,0,255,0.1);border:1px solid rgba(112,0,255,0.3);border-radius:14px;padding:16px;color:#c4b5fd;font-style:italic;font-size:0.95rem;}
+        .match-box{background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(0,242,255,0.1));border:1px solid rgba(99,102,241,0.3);border-radius:20px;padding:24px;text-align:center;}
+        .match-score{font-size:3rem;font-weight:800;background:linear-gradient(to right,#6366f1,#00f2ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .progress-bar-wrap{background:rgba(255,255,255,0.05);border-radius:100px;height:8px;}
+        .progress-bar-fill{background:linear-gradient(to right,#6366f1,#00f2ff);border-radius:100px;height:8px;transition:width 1s;}
+        .member-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#00f2ff);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;}
+        .btn-join{background:white;color:black;border:none;padding:16px 40px;border-radius:14px;font-weight:800;font-size:1rem;cursor:pointer;transition:0.3s;width:100%;}
+        .btn-join:hover{background:#6366f1;color:white;}
+        .flash-msg{background:rgba(99,102,241,0.1);border:1px solid #6366f1;color:white;padding:12px 20px;border-radius:14px;margin-bottom:20px;}
+    </style>
+</head>
+<body>
+<div class="container" style="max-width:900px;">
+    <a href="/worlds" class="text-secondary text-decoration-none mb-4 d-inline-block">← Back to Worlds</a>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}{% for m in messages %}<div class="flash-msg">✓ {{ m }}</div>{% endfor %}{% endif %}
+    {% endwith %}
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="glass-card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-2">
+                    <div>
+                        <span class="badge mb-2" style="background:rgba(99,102,241,0.2);color:#a5b4fc;font-size:0.75rem;">{{ project.world|upper }}</span>
+                        <h2 class="fw-bold gradient-text mb-1">{{ project.title }}</h2>
+                        <small class="text-secondary">by {{ project.author }} · {{ project.status }}</small>
+                    </div>
+                    <span class="badge" style="background:rgba(0,255,136,0.1);color:#00ff88;border:1px solid #00ff88;font-size:0.8rem;">{{ project.vacancies }} spots open</span>
+                </div>
+
+                {% if project.ai_tagline %}
+                <div class="ai-tagline mb-4">
+                    ✨ <strong>AI DNA:</strong> "{{ project.ai_tagline }}"
+                </div>
+                {% endif %}
+
+                <p class="text-secondary mb-4">{{ project.desc }}</p>
+
+                {% if project.tag_list %}
+                <div class="d-flex gap-2 flex-wrap mb-4">
+                    {% for tag in project.tag_list %}<span class="tag-pill">{{ tag }}</span>{% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- PROGRESS -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <small class="text-secondary fw-bold">PROJECT PROGRESS</small>
+                        <small class="fw-bold">{{ project.progress }}%</small>
+                    </div>
+                    <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:{{ project.progress }}%"></div></div>
+                </div>
+
+                {% if is_author %}
+                <div class="glass-card p-3 mb-4" style="border-color:rgba(99,102,241,0.3);">
+                    <small class="text-secondary d-block mb-2 fw-bold">UPDATE PROGRESS</small>
+                    <form method="POST" action="/update_progress/{{ project.id }}" class="d-flex gap-2">
+                        <input type="number" name="progress" value="{{ project.progress }}" min="0" max="100"
+                               style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white;padding:8px 12px;border-radius:10px;width:100px;">
+                        <button type="submit" style="background:#6366f1;color:white;border:none;padding:8px 20px;border-radius:10px;font-weight:700;cursor:pointer;">Update</button>
+                    </form>
+                </div>
+
+                <form method="POST" action="/archive_project/{{ project.id }}" class="mb-4">
+                    <button type="submit" style="background:rgba(0,255,136,0.1);border:1px solid #00ff88;color:#00ff88;padding:10px 24px;border-radius:12px;font-weight:700;cursor:pointer;font-size:0.9rem;">
+                        ✓ Mark Complete (+200 XP)
+                    </button>
+                </form>
+                {% endif %}
+
+                <!-- SQUAD BUILDER -->
+                <div id="squad-section">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <small class="text-secondary fw-bold">AI SQUAD SUGGESTIONS</small>
+                        <button onclick="loadSquad()" style="background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);color:#a5b4fc;padding:6px 16px;border-radius:10px;font-size:0.8rem;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;">🤖 Find Best Squad</button>
+                    </div>
+                    <div id="squad-results"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- AI MATCH SCORE -->
+            <div class="match-box mb-4">
+                <small class="text-secondary d-block mb-2" style="font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;">Your AI Match Score</small>
+                <div class="match-score">{{ match_score }}%</div>
+                {% if match_reason %}<p class="text-secondary mt-2 mb-0" style="font-size:0.82rem;">{{ match_reason }}</p>{% endif %}
+            </div>
+
+            <!-- JOIN -->
+            {% if not already_member and not is_author %}
+            <form method="POST" action="/join_project/{{ project.id }}" class="mb-4">
+                <button type="submit" class="btn-join">Join Project +50XP</button>
+            </form>
+            {% elif already_member %}
+            <div class="text-center p-3 mb-4" style="background:rgba(0,255,136,0.1);border:1px solid #00ff88;border-radius:14px;color:#00ff88;font-weight:700;">✓ You're a member</div>
+            {% elif is_author %}
+            <div class="text-center p-3 mb-4" style="background:rgba(99,102,241,0.1);border:1px solid #6366f1;border-radius:14px;color:#a5b4fc;font-weight:700;">👑 You lead this project</div>
+            {% endif %}
+
+            <!-- TEAM -->
+            <div class="glass-card p-4">
+                <h6 class="fw-bold mb-3">Current Team</h6>
+                {% if members %}
+                    {% for m in members %}
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="member-avatar">{{ m.name[:2]|upper }}</div>
+                        <div>
+                            <div class="fw-bold" style="font-size:0.9rem;">{{ m.name }}</div>
+                            <small class="text-secondary">{{ m.niche or 'Scholar' }}</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-secondary" style="font-size:0.85rem;">No members yet.</p>
+                {% endif %}
+                {% if project.vacancies > 0 %}
+                    {% for i in range([project.vacancies, 3]|min) %}
+                    <div class="d-flex align-items-center gap-3 mb-2 opacity-50">
+                        <div style="width:40px;height:40px;border-radius:50%;border:2px dashed rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;">+</div>
+                        <small class="text-secondary">Open slot</small>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function loadSquad() {
+    const el = document.getElementById('squad-results');
+    el.innerHTML = '<p class="text-secondary" style="font-size:0.85rem;">🤖 AI is finding the best squad members...</p>';
+    fetch('/api/squad_suggest/{{ project.id }}')
+        .then(r => r.json())
+        .then(data => {
+            if (!data.length) { el.innerHTML = '<p class="text-secondary" style="font-size:0.85rem;">No suggestions yet. More scholars needed.</p>'; return; }
+            el.innerHTML = data.map(s =>
+                `<div style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);border-radius:12px;padding:12px;margin-bottom:8px;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div><strong style="font-size:0.9rem;">${s.name}</strong> <span style="color:#94a3b8;font-size:0.8rem;">${s.niche || ''}</span></div>
+                        <span style="background:rgba(0,255,136,0.1);border:1px solid #00ff88;color:#00ff88;padding:3px 10px;border-radius:100px;font-size:0.75rem;font-weight:700;">${s.score}% match</span>
+                    </div>
+                    <p style="color:#64748b;font-size:0.78rem;margin:4px 0 0 0;">${s.reason}</p>
+                </div>`
+            ).join('');
+        })
+        .catch(() => { el.innerHTML = '<p class="text-secondary" style="font-size:0.85rem;">Set GROQ_API_KEY to enable AI Squad Builder.</p>'; });
+}
+</script>
+</body>
+</html>
