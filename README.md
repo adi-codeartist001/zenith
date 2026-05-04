@@ -1,129 +1,170 @@
-# ⚡ ZENITH — Elite Campus Collaboration Network
+<div align="center">
 
-> *Reach Your Zenith. Build Together.*
+# ⚡ ZENITH
+### Elite Campus Collaboration Network
 
-ZENITH is a full-stack, AI-assisted campus collaboration platform built for GLA University students. Discover projects, join teams, propose initiatives, and connect with skill-matched collaborators — all in one dark, glassmorphic web app.
+[![Live](https://img.shields.io/badge/🚀_Live-zenith--hca5.onrender.com-6366f1?style=for-the-badge)](https://zenith-hca5.onrender.com)
+[![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![Flask](https://img.shields.io/badge/Flask-3.1-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com)
+[![Groq](https://img.shields.io/badge/Groq-LLaMA_3-FF6B35?style=for-the-badge)](https://groq.com)
+[![Render](https://img.shields.io/badge/Deployed_on-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://render.com)
+
+*The AI-powered campus collaboration engine for the next generation of builders.*
+
+**[🌐 Visit Live App](https://zenith-hca5.onrender.com)** · **[📋 Report Bug](https://github.com/adi-codeartist001/zenith/issues)** · **[✨ Request Feature](https://github.com/adi-codeartist001/zenith/issues)**
+
+</div>
 
 ---
 
-## 🚀 Features
+## 🎯 What is ZENITH?
 
-- 🔐 **Real Authentication** — bcrypt-hashed passwords, session-based login/logout
-- 🌍 **Worlds Directory** — Browse projects by domain: Tech Hub, Creative Studio, Research Lab, Economy & Trade
-- 🤖 **AI-Powered Matching** — Smart project taglines, skill tags, and collaborator vibe-match scores
-- 📊 **XP & Levelling System** — Earn XP by joining projects, connecting with collaborators, and completing missions
-- 🗂️ **Full Project Lifecycle** — Create → Join → Track Progress → Archive
-- 📡 **Live Pulse Feed** — Real-time activity log of platform actions
-- 🏆 **Hall of Fame Archive** — Completed projects with CONQUERED ribbon
+ZENITH is a full-stack, AI-powered campus collaboration platform built exclusively for **GLA University** students. It replaces random group formation with an intelligent discovery engine — matching students to projects and collaborators based on skills, niche, and AI-computed compatibility scores.
+
+Students explore themed **Worlds**, discover open projects with **AI match scores**, join or propose initiatives, connect with **AI vibe-matched collaborators**, and track their growth through an **XP & levelling system**.
+
+---
+
+## ✨ Features
+
+| Feature | Description |
+|---|---|
+| 🌍 **Themed Worlds** | Navigate projects by domain — Tech Hub, Creative Studio, Research Lab, Economy & Trade |
+| 🤖 **AI Project Matching** | Groq LLaMA 3 computes a 60-99% match score between your skills and each project |
+| ✨ **AI Project DNA** | Auto-generates punchy taglines and skill tags when you propose a project |
+| 🎯 **Vibe Match** | AI scores collaborator compatibility with a 2-word descriptor (Tech Twins, Creative Sync) |
+| ⚡ **XP & Levelling** | Earn XP for joining (+50), proposing (+150), completing (+200), connecting (+20) |
+| 🏆 **Rank System** | Progress from Initiate → Scholar → Innovator → Zenith Elite |
+| 📡 **Pulse Feed** | Real-time activity feed showing live platform actions from all users |
+| 🎙️ **Voice Narration** | ElevenLabs AI-generated voice narration on the landing page |
+| 🎬 **Cinematic Landing** | Looping background video, cursor glow, animated floating icon stickers |
+| 🏛️ **Archive Hall** | Completed projects showcased with a CONQUERED ribbon and XP earned |
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Backend | Python 3, Flask |
-| Database | SQLite via Flask-SQLAlchemy |
-| Auth | Werkzeug (bcrypt) |
-| Frontend | Jinja2, Bootstrap 5.3, Custom CSS |
-| Icons | Lucide Icons (CDN) |
-| Fonts | Plus Jakarta Sans, Space Grotesk |
-| Deployment | Gunicorn, Render |
+### Backend
+- **Python 3.11** — Core language
+- **Flask 3.1** — Web framework for routing, sessions, and template rendering
+- **SQLAlchemy** — ORM for database models and queries
+- **SQLite** — File-based persistent database (development)
+- **Werkzeug** — PBKDF2 password hashing for secure authentication
+- **Flask Sessions** — Cookie-based login state management
+
+### AI Layer
+- **Groq API** — LLaMA 3 8B model for all three AI features
+- **Project DNA** — Auto-generates tagline + tags on project proposal
+- **Match Scoring** — 60-99% skill-based project compatibility score
+- **Vibe Matching** — Collaborator compatibility score + 2-word descriptor
+
+### Frontend
+- **Jinja2** — Server-side HTML templating engine
+- **Custom CSS** — Dark glassmorphic design system, no Bootstrap dependency
+- **Plus Jakarta Sans** — Primary typeface (Google Fonts)
+- **Lucide Icons** — SVG icon library (unpkg CDN)
+- **HTML5 Canvas** — Live node-network animation on landing page
+
+### Infrastructure
+- **Gunicorn** — Production WSGI server
+- **Render** — Cloud PaaS deployment
+- **Cloudinary** — CDN hosting for background video asset
+- **ElevenLabs** — AI voice narration (Eleven Multilingual v2)
 
 ---
 
-## 📁 Project Structure
-
-```
-zenith_upgraded/
-├── app.py                    # Flask app — all routes, models, AI helpers
-├── requirements.txt          # Python dependencies
-├── Procfile                  # Gunicorn deployment config
-├── instance/
-│   └── zenith.db             # SQLite database (auto-created)
+## 🗂️ Project Structure
+zenith/
+├── app.py                  # Flask backend — routes, models, AI functions
+├── requirements.txt        # Python dependencies
+├── Procfile               # Render deployment config
 ├── static/
-│   ├── style.css             # Glassmorphic shared styles
-│   ├── script.js             # Landing page & dashboard JS
-│   ├── bg.mp4                # Background video
-│   └── narration.mp3         # Audio asset
+│   ├── style.css          # Global dark glassmorphic design system
+│   ├── script.js          # Cursor glow, sticker animations
+│   ├── narration.mp3      # ElevenLabs AI voice narration
+│   └── bg.mp4             # Cinematic background video
 └── templates/
-    ├── index.html            # Landing page
-    ├── overview.html         # Platform intro
-    ├── login.html            # Login
-    ├── register.html         # Registration
-    ├── niche.html            # Niche onboarding
-    ├── dashboard.html        # User dashboard
-    ├── worlds.html           # Worlds directory
-    ├── project_hub.html      # Per-world project listing
-    ├── projects.html         # Per-niche project browser
-    ├── project_overview.html # Project detail + join
-    ├── propose_project.html  # Create new project
-    ├── my_projects.html      # Authored & joined projects
-    ├── collaborators.html    # AI-matched collaborators
-    ├── archive.html          # Completed projects
-    └── messages.html         # Pulse activity feed
-```
+├── index.html         # Landing page
+├── dashboard.html     # User dashboard with Pulse feed
+├── worlds.html        # World directory with AI match scores
+├── project_hub.html   # Per-world project browser
+├── project_overview.html
+├── propose_project.html
+├── collaborators.html
+├── my_projects.html
+├── messages.html      # Pulse activity feed
+├── archive.html       # Hall of Fame
+├── login.html
+├── register.html
+├── niche.html         # 4-step onboarding
+└── overview.html
 
 ---
 
-## ⚙️ Local Setup
+## 🚀 Local Setup
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/your-username/zenith.git
+git clone https://github.com/adi-codeartist001/zenith.git
 cd zenith
 
 # 2. Create virtual environment
 python -m venv venv
-source venv/bin/activate      # Mac/Linux
-venv\Scripts\activate         # Windows
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
 # 3. Install dependencies
 pip install -r requirements.txt
 
-# 4. Run the app
-python app.py
-```
+# 4. Set environment variables
+export SECRET_KEY="your_secret_key"
+export GROQ_API_KEY="your_groq_api_key"
 
-Open **http://localhost:5000** in your browser. The SQLite database is created automatically on first run.
+# 5. Add media assets
+# Place narration.mp3 and bg.mp4 in static/
+
+# 6. Run
+python app.py
+# Open http://localhost:5000
+```
 
 ---
 
-## 🌐 Deployment on Render
+## 🌐 Deployment
 
-1. Push your code to GitHub
-2. Go to [render.com](https://render.com) → **New Web Service** → connect your repo
-3. Set the following:
+Deployed on **Render** via GitHub integration.
 
-| Field | Value |
+| Config | Value |
 |---|---|
-| **Build Command** | `pip install -r requirements.txt` |
-| **Start Command** | `gunicorn app:app` |
-| **Environment** | Python 3 |
-
-4. Add these environment variables in the Render dashboard:
-
-| Variable | Description |
-|---|---|
-| `SECRET_KEY` | Any long random string for Flask sessions |
-| `GROQ_API_KEY` | Required for AI features (taglines, match scores) |
-
-5. Hit **Deploy** — Render handles the rest.
+| Runtime | Python 3 |
+| Build Command | `pip install -r requirements.txt` |
+| Start Command | `gunicorn app:app` |
+| Environment Variables | `SECRET_KEY`, `GROQ_API_KEY` |
 
 ---
 
 ## 👥 Team
 
-| Name 
-| Aditya Srivastava 
-| Nandini Saraswat 
-| Shatakshi Shukla
-| Shrangika Agnihotri 
+| Name | Role |
+|---|---|
+| **Aditya Srivastava** | Full-Stack Lead — Backend, AI Integration, Frontend Architecture |
+| **Nandini Saraswat** | Frontend Development & UI Design |
+| **Shatakshi Shukla** | Database Design & Testing |
+| **Shrangika Agnihotri** | Documentation & Research |
 
-**Under the guidance of:** Faculty Mentor, Department of CSE
-**Institution:** GLA University, Mathura
-**Academic Year:** 2025–2026
+*Built at GLA University, Mathura · B.Tech CSE (AI & Data Analytics) · 2025-26*
 
 ---
 
-<p align="center">Built with 💜 by Team ZENITH — GLA University</p>
+## 📄 License
+
+This project is built for academic purposes at GLA University. All rights reserved © 2026 Team ZENITH.
+
+---
+
+<div align="center">
+
+**[⚡ Launch ZENITH](https://zenith-hca5.onrender.com)**
+
+*Reach Your Zenith.*
+
+</div>
