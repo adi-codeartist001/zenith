@@ -9,13 +9,10 @@ app.secret_key = os.environ.get('SECRET_KEY', 'zenith_ultra_2026')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///zenith.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')
+GROQ_API_KEY = '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'
+GROQ_MODEL   = 'llama-3.3-70b-versatile'
 
 db = SQLAlchemy(app)
-
-# ══════════════════════════════════════════════════════════
-# MODELS
-# ══════════════════════════════════════════════════════════
 
 class User(db.Model):
     id           = db.Column(db.Integer, primary_key=True)
@@ -81,10 +78,6 @@ class ProjectMember(db.Model):
     role         = db.Column(db.String(100), default='Member')
     joined_at    = db.Column(db.DateTime, default=datetime.utcnow)
 
-# ══════════════════════════════════════════════════════════
-# HELPERS
-# ══════════════════════════════════════════════════════════
-
 NICHE_WORLD_MAP = {
     'AI/ML': 'tech', 'Full-Stack Dev': 'tech', 'Cloud (Azure)': 'tech',
     'UI/UX Design': 'creative', 'Graphic Design': 'creative', 'Motion Design': 'creative',
@@ -98,14 +91,12 @@ def log_pulse(actor, action, project='', world=''):
     db.session.commit()
 
 def groq_chat(prompt, system="You are Zenith AI, assistant for a student collaboration platform."):
-    if not GROQ_API_KEY:
-        return None
     try:
         resp = requests.post(
             'https://api.groq.com/openai/v1/chat/completions',
             headers={'Authorization': f'Bearer {GROQ_API_KEY}', 'Content-Type': 'application/json'},
             json={
-                'model': 'llama3-8b-8192',
+                'model': GROQ_MODEL,
                 'messages': [{'role': 'system', 'content': system}, {'role': 'user', 'content': prompt}],
                 'max_tokens': 300, 'temperature': 0.7
             }, timeout=10
@@ -179,10 +170,6 @@ def award_xp(email, amount, reason=''):
         user.xp += amount
         user.level = max(1, user.xp // 100)
         db.session.commit()
-
-# ══════════════════════════════════════════════════════════
-# ROUTES
-# ══════════════════════════════════════════════════════════
 
 @app.route('/')
 def index():
@@ -502,6 +489,33 @@ def api_squad_suggest(project_id):
         ranked.append({'name': u.name, 'niche': u.niche, 'score': score, 'reason': reason})
     ranked.sort(key=lambda x: x['score'], reverse=True)
     return jsonify(ranked[:5])
+
+@app.route('/api/chat', methods=['POST'])
+def api_chat():
+    data = request.get_json()
+    user_message = data.get('message', '')
+    try:
+        resp = requests.post(
+            'https://api.groq.com/openai/v1/chat/completions',
+            headers={'Authorization': f'Bearer {GROQ_API_KEY}', 'Content-Type': 'application/json'},
+            json={
+                'model': GROQ_MODEL,
+                'messages': [
+                    {'role': 'system', 'content': 'You are Zenith AI, a smart assistant inside Zenith — a student collaboration platform. Help students find projects, build squads, earn XP, and succeed. Be concise, friendly, and motivating. Max 3 sentences per reply.'},
+                    {'role': 'user', 'content': user_message}
+                ],
+                'max_tokens': 200
+            },
+            timeout=10
+        )
+        result = resp.json()
+        if 'choices' in result:
+            reply = result['choices'][0]['message']['content'].strip()
+        else:
+            reply = result.get('error', {}).get('message', 'AI unavailable right now.')
+        return jsonify({'reply': reply})
+    except Exception as e:
+        return jsonify({'reply': str(e)}), 500
 
 @app.route('/overview')
 def overview():
