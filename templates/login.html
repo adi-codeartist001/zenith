@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith | Authentication</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg: #020203;
+            --accent-primary: #00f2ff;
+            --accent-secondary: #7000ff;
+            /* Switched to pure white for maximum readability */
+            --text-main: #ffffff; 
+            --text-dim: #cbd5e1; /* Lighter slate for better contrast */
+            --glass-bg: rgba(10, 10, 12, 0.9);
+            --input-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background: var(--bg);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text-main);
+            overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        /* --- BACKGROUND STICKERS (Reduced Opacity for Text Clarity) --- */
+        .sticker-field {
+            position: fixed; inset: 0; z-index: 1; pointer-events: none;
+        }
+
+        .sticker {
+            position: absolute;
+            animation: pop-float 15s infinite ease-in-out;
+            opacity: 0.3; /* Lowered so background doesn't fight the text */
+            filter: drop-shadow(0 0 10px currentColor);
+        }
+
+        @keyframes pop-float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            50% { transform: translate(30px, -40px) rotate(15deg) scale(1.1); }
+        }
+
+        /* --- LOGIN CARD --- */
+        .login-card {
+            position: relative; z-index: 10;
+            width: 90%; max-width: 440px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 28px;
+            padding: 60px 45px;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.9);
+            text-align: center;
+        }
+
+        /* Vivid Title with Glow */
+        h1 {
+            font-size: 2.5rem; 
+            font-weight: 800; 
+            letter-spacing: 4px;
+            margin: 0 0 12px 0; 
+            text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            background: linear-gradient(to bottom, #fff, #bbb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle { 
+            color: var(--text-dim); 
+            font-size: 1rem; 
+            margin-bottom: 45px; 
+            font-weight: 500;
+        }
+
+        /* --- HIGH VISIBILITY FORM --- */
+        .form-group { text-align: left; margin-bottom: 28px; }
+
+        label {
+            display: block; 
+            font-size: 0.85rem; 
+            font-weight: 700;
+            text-transform: uppercase; 
+            color: var(--accent-primary); /* Use accent color for labels */
+            letter-spacing: 2px; 
+            margin-bottom: 12px;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%; 
+            background: var(--input-bg);
+            border: 2px solid rgba(255, 255, 255, 0.1); /* Thicker border */
+            padding: 18px 22px; 
+            border-radius: 16px;
+            color: white; 
+            font-size: 1.1rem; 
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none; 
+            border-color: var(--accent-primary);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 25px rgba(0, 242, 255, 0.15);
+        }
+
+        /* Placeholder Visibility */
+        ::placeholder { color: rgba(255, 255, 255, 0.3); }
+
+        .options-row {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.95rem; margin-bottom: 40px; color: var(--text-main);
+        }
+
+        .forgot-link { 
+            color: var(--accent-primary); 
+            text-decoration: none; 
+            font-weight: 700; 
+            transition: 0.3s;
+        }
+        .forgot-link:hover { text-shadow: 0 0 10px var(--accent-primary); }
+
+        /* Powerful Button */
+        .btn-sign-in {
+            width: 100%; 
+            background: #ffffff; 
+            color: #000;
+            padding: 20px; 
+            border: none; 
+            border-radius: 16px;
+            font-weight: 800; 
+            font-size: 1.1rem; 
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .btn-sign-in:hover {
+            transform: translateY(-3px);
+            background: var(--accent-primary);
+            box-shadow: 0 20px 40px rgba(0, 242, 255, 0.3);
+        }
+
+        .footer-link { 
+            margin-top: 35px; 
+            font-size: 1rem; 
+            color: var(--text-dim); 
+        }
+        .footer-link a { 
+            color: white; 
+            text-decoration: underline; 
+            text-underline-offset: 4px;
+            font-weight: 800; 
+        }
+
+        /* Mouse Glow */
+        #cursor-glow {
+            position: fixed; width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(112, 0, 255, 0.12) 0%, transparent 70%);
+            border-radius: 50%; pointer-events: none; z-index: 2;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="cursor-glow"></div>
+    <div class="sticker-field" id="field"></div>
+
+    <div class="login-card">
+        <h1>Zenith</h1>
+        <p class="subtitle">Continue your elite journey.</p>
+
+        <!-- Replace your current <form> block with this -->
+<form action="/login" method="POST">
+    <!-- Flash Messages for Errors (Authenticates user feedback) -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message {{ category }}" style="color: var(--accent-1); margin-bottom: 15px; font-size: 0.9rem; text-shadow: 0 0 5px var(--accent-1);">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="form-group">
+        <label>College Email</label>
+        <input type="email" name="email" placeholder="name@gla.ac.in" required 
+               style="background: var(--glass); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; width: 100%;">
+    </div>
+
+    <div class="form-group" style="margin-top: 20px;">
+        <label>password</label>
+        <input type="password" name="password" placeholder="" required
+               style="background: var(--glass); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; width: 100%;">
+    </div>
+
+    <div class="options-row" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; font-size: 0.85rem;">
+        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+            <input type="checkbox" name="remember" style="accent-color: var(--accent-1); width: 16px; height: 16px;">
+            Remember me
+        </label>
+        <a href="#" class="forgot-link" style="color: var(--accent-2); text-decoration: none;">Forgot Password?</a>
+    </div>
+
+    <button type="submit" class="btn-sign-in" 
+            style="width: 100%; margin-top: 30px; padding: 12px; background: white; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s;">
+        Authenticate
+    </button>
+</form>
+
+        <p class="footer-link">New to the network? <a href="/register">Join Zenith</a></p>
+    </div>
+
+    <script>
+        const field = document.getElementById('field');
+        const icons = ['shield-check', 'fingerprint', 'key-round', 'scan-eye', 'cpu', 'zap'];
+        const colors = ['#00f2ff', '#7000ff', '#ffffff'];
+
+        for (let i = 0; i < 15; i++) {
+            const div = document.createElement('div');
+            div.className = 'sticker';
+            div.style.left = Math.random() * 95 + '%';
+            div.style.top = Math.random() * 95 + '%';
+            div.style.color = colors[Math.floor(Math.random() * colors.length)];
+            div.style.animationDelay = (Math.random() * 5) + 's';
+            div.innerHTML = `<i data-lucide="${icons[Math.floor(Math.random() * icons.length)]}" size="${30 + Math.random() * 20}"></i>`;
+            field.appendChild(div);
+        }
+        lucide.createIcons();
+
+        const glow = document.getElementById('cursor-glow');
+        document.addEventListener('mousemove', (e) => {
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
+    </script>
+</body>
+</html>
